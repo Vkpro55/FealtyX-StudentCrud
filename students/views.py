@@ -11,17 +11,19 @@ import json
 
 # Create your views here.
 
-@api_view(['POST'])
+@csrf_protect
 def create_student(request):
-    print("Incoming data:", request.data)  # Log the request data
+    if request.method == 'POST':
+        try:
+            # Parse the JSON data from the request body
+            data = json.loads(request.body)
+            # Your logic to handle the student data
+            student_name = data.get('name')
+            # Perform your logic (saving data to DB, etc.)
 
-    serializer = StudentSerializer(data=request.data)
-
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({"message": "Student created successfully!"}, status=201)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON format"}, status=400)
 
 
 
