@@ -13,18 +13,16 @@ import json
 
 @api_view(['POST'])
 def create_student(request):
-    try:
-        serializer = StudentSerializer(data=request.data)
+    print("Incoming data:", request.data)  # Log the request data
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+    serializer = StudentSerializer(data=request.data)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    except Exception as e:
-        logger.error(f"Error while creating student: {str(e)}")
-        return Response({"detail": "Server error. Please try again."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 @api_view(['GET'])
